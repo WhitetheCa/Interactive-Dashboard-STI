@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Dashboard | STI Traffic Data</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="Interactive_Dashboard_logo.png">
+        
+        <link rel="stylesheet" type="text/css" href="main.css">
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo-area">
+                <img src="Interactive_Dashboard_logo.png" class="logo-icon" alt="Logo">
+                STI Traffic & Attendance Dashboard
+            </div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="survey.html">Survey</a>
+                <a href="#" class="current-page">Dashboard</a>
+                <a href="team.html">Team</a>
+            </nav>
+        </header>
+
+        <div id="trafficNotification" class="notification-toast">
+            <div class="notif-icon">⚠️</div>
+            <div class="notif-content">
+                <strong id="notifTitle">Traffic Alert</strong>
+                <p id="notifMessage">Loading updates...</p>
+            </div>
+        </div>
+
+        <div class="space-wrapper" style="min-height: 100vh; padding-bottom: 40px;">
+            
+            <div class="dashboard-content">
+                
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Day of the Week</label>
+                        <select id="filterDay"><option>All</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Mode of Transportation</label>
+                        <select id="filterMode"><option>All</option><option>Car</option><option>Motorcycle</option><option>Bicycle</option><option>Walking</option><option>Public Transport</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Traffic Level</label>
+                        <select id="filterTraffic"><option>All</option><option>Light</option><option>Moderate</option><option>Heavy</option></select>
+                    </div>
+                    <div class="filter-group" style="flex-grow: 2;">
+                        <label>College Program</label>
+                        <select id="filterProgram"><option>All</option><option>BSIT</option><option>BSCpE</option><option>BSA</option><option>BSAIS</option><option>BSBA-OM</option><option>BSHM</option><option>BSTM</option><option>BACOMM</option><option>BMMA</option></select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn-blue" id="exportBtn">Export Filtered CSV</button>
+                        <button class="btn-grey" id="resetBtn">Reset</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-layout">
+                    <div class="left-column">
+                        <div class="chart-row">
+                            <div class="dash-card">
+                                <h3>Avg. Commute Time (Mins)</h3>
+                                <div class="css-chart-container vertical">
+                                    <div class="bar-group">
+                                        <div class="bar-fill" id="barMon" style="height: 0%;"></div>
+                                        <span>Mon</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill" id="barTue" style="height: 0%;"></div>
+                                        <span>Tue</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill" id="barWed" style="height: 0%;"></div>
+                                        <span>Wed</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill" id="barThu" style="height: 0%;"></div>
+                                        <span>Thu</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill" id="barFri" style="height: 0%;"></div>
+                                        <span>Fri</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dash-card">
+                                <h3>Traffic Volume Trend</h3>
+                                <div class="css-chart-container vertical">
+                                    <div class="bar-group">
+                                        <div class="bar-fill pink" id="volMon" style="height: 0%;"></div>
+                                        <span>Mon</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill pink" id="volTue" style="height: 0%;"></div>
+                                        <span>Tue</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill pink" id="volWed" style="height: 0%;"></div>
+                                        <span>Wed</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill pink" id="volThu" style="height: 0%;"></div>
+                                        <span>Thu</span>
+                                    </div>
+                                    <div class="bar-group">
+                                        <div class="bar-fill pink" id="volFri" style="height: 0%;"></div>
+                                        <span>Fri</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dash-card">
+                            <h3 style="margin-bottom: 15px; color: white;">Attendance Rate (%)</h3>
+                            <div class="css-chart-container horizontal">
+                                
+                                <div class="bar-row">
+                                    <span class="label">Light</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill-horz green" id="attLight" style="width: 0%;">0%</div>
+                                    </div>
+                                </div>
+
+                                <div class="bar-row">
+                                    <span class="label">Moderate</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill-horz blue" id="attMod" style="width: 0%;">0%</div>
+                                    </div>
+                                </div>
+
+                                <div class="bar-row">
+                                    <span class="label">Heavy</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill-horz indigo" id="attHeavy" style="width: 0%;">0%</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="right-column">
+                        
+                        <div class="dash-card map-widget">
+                            
+                            <div class="map-header">
+                                <span>Live Traffic Map</span>
+                                <div class="map-info">
+                                    MacArthur Highway<br>Malolos Bulacan
+                                </div>
+                                <div class="map-date">
+                                    November 18, 2025<br>11:17 AM
+                                </div>
+                            </div>
+
+                            <div class="map-container">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3856.387258807954!2d120.80977837596277!3d14.85979698565869!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396ad90e2731355%3A0x6125105609752731!2sMalolos%20Crossing!5e0!3m2!1sen!2sph!4v1713320000000!5m2!1sen!2sph" 
+                                    width="100%" 
+                                    height="300" 
+                                    style="border:0; display: block;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        </div>
+
+                        <div class="dash-card summary-widget">
+                            <h3>Summary</h3>
+                            
+                            <div class="summary-row">
+                                <span>Average Commute Time (Filtered)</span>
+                                <span class="stat-val" id="summaryAvgCommute">39 Mins</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Average Delay</span>
+                                <span class="stat-val" id="summaryAvgDelay">10 Mins</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Attendance (Filtered)</span>
+                                <span class="stat-val" id="summaryAttendance">85%</span>
+                            </div>
+
+                            <p class="disclaimer">
+                                These Data and Map are only example for now! Real values will be updated after survey input.
+                            </p>
+                        </div>
+
+                            <div class="kpi-row">
+                            <div class="kpi-card">
+                                <span class="kpi-label">Total Students Tracked</span>
+                                <span class="kpi-value" id="kpiTotalStudents">96</span>
+                            </div>
+                            <div class="kpi-card">
+                                <span class="kpi-label">Overall Avg. Commute</span>
+                                <span class="kpi-value" id="kpiOverallCommute">50 Mins</span>
+                            </div>
+                            <div class="kpi-card">
+                                <span class="kpi-label">Peak Traffic Day</span>
+                                <span class="kpi-value" id="kpiPeakTraffic">Wednesday</span>
+                            </div>
+                        </div>
+
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <footer>
+            &copy; 2025 STI College Malolos | ITMAWD 12-A (Group 3) | Practical Research II
+        </footer>
+
+        <script src="js/charts.js"></script>
+    </body>
+</html>
